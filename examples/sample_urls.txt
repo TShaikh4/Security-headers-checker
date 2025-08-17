@@ -1,0 +1,32 @@
+# Security Headers Checker - Sample URLs for Testing
+# 
+# This file contains a collection of URLs for testing the security headers checker.
+# Lines starting with # are comments and will be ignored.
+# 
+# Usage: python security_headers_checker.py --file examples/sample_urls.txt
+
+# Major websites (known for good security practices)
+https://github.com
+https://stackoverflow.com
+https://mozilla.org
+https://cloudflare.com
+
+# Security-focused websites
+https://owasp.org
+https://cisa.gov
+https://nist.gov
+
+# Popular websites (mixed security practices)
+https://google.com
+https://microsoft.com
+https://amazon.com
+https://twitter.com
+
+# Test sites for demonstration
+https://httpbin.org
+https://example.com
+https://httpstat.us/200
+
+# Add your own URLs below for testing:
+# https://your-website.com
+# https://your-staging-site.com

@@ -1,0 +1,215 @@
+{
+  "scan_settings": {
+    "timeout": 15,
+    "max_retries": 5,
+    "retry_delay": 2,
+    "user_agents": [
+      "Mozilla/5.0 (Security-Headers-Checker/1.0) Custom-Config",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15"
+    ]
+  },
+  "headers": {
+    "content-security-policy": {
+      "name": "Content-Security-Policy",
+      "description": "Controls resource loading to prevent XSS attacks",
+      "importance": "critical",
+      "score_weight": 30,
+      "recommendations": [
+        "Implement a strict CSP policy with specific source lists",
+        "Avoid 'unsafe-inline' and 'unsafe-eval' directives",
+        "Use nonces or hashes for necessary inline scripts",
+        "Regularly audit and update your CSP policy",
+        "Consider implementing CSP reporting to monitor violations"
+      ],
+      "analysis_rules": {
+        "unsafe_inline": {
+          "pattern": "'unsafe-inline'",
+          "severity": "high",
+          "message": "unsafe-inline reduces XSS protection effectiveness"
+        },
+        "unsafe_eval": {
+          "pattern": "'unsafe-eval'",
+          "severity": "critical",
+          "message": "unsafe-eval allows dangerous dynamic code execution"
+        },
+        "wildcard_source": {
+          "pattern": "\\*",
+          "severity": "medium",
+          "message": "Wildcard sources weaken CSP protection"
+        },
+        "data_uris": {
+          "pattern": "data:",
+          "severity": "medium",
+          "message": "data: URIs can be used for XSS attacks"
+        }
+      }
+    },
+    "strict-transport-security": {
+      "name": "Strict-Transport-Security",
+      "description": "Enforces HTTPS and prevents downgrade attacks",
+      "importance": "critical",
+      "score_weight": 25,
+      "recommendations": [
+        "Set max-age to at least 31536000 seconds (1 year)",
+        "Include includeSubDomains directive for comprehensive protection",
+        "Consider adding preload directive for major sites",
+        "Ensure all subdomains support HTTPS before enabling includeSubDomains"
+      ],
+      "analysis_rules": {
+        "short_max_age": {
+          "pattern": "max-age=([0-9]+)",
+          "threshold": 31536000,
+          "severity": "medium",
+          "message": "max-age should be at least 1 year for effective protection"
+        },
+        "missing_subdomains": {
+          "pattern": "includeSubDomains",
+          "required": true,
+          "severity": "medium",
+          "message": "includeSubDomains directive missing - subdomains may be vulnerable"
+        },
+        "very_short_max_age": {
+          "pattern": "max-age=([0-9]+)",
+          "threshold": 86400,
+          "severity": "high",
+          "message": "max-age less than 24 hours provides minimal protection"
+        }
+      }
+    },
+    "x-frame-options": {
+      "name": "X-Frame-Options",
+      "description": "Prevents clickjacking by controlling iframe embedding",
+      "importance": "high",
+      "score_weight": 15,
+      "recommendations": [
+        "Use DENY for maximum clickjacking protection",
+        "Use SAMEORIGIN if legitimate same-origin framing is required",
+        "Avoid ALLOWALL as it provides no protection",
+        "Consider migrating to CSP frame-ancestors for more flexibility"
+      ],
+      "valid_values": ["DENY", "SAMEORIGIN", "ALLOW-FROM"],
+      "preferred_value": "DENY"
+    },
+    "x-content-type-options": {
+      "name": "X-Content-Type-Options",
+      "description": "Prevents MIME type confusion attacks",
+      "importance": "medium",
+      "score_weight": 10,
+      "recommendations": [
+        "Always set to 'nosniff' to prevent MIME type sniffing",
+        "Ensure proper Content-Type headers are set for all resources"
+      ],
+      "valid_values": ["nosniff"],
+      "required_value": "nosniff"
+    },
+    "referrer-policy": {
+      "name": "Referrer-Policy",
+      "description": "Controls referrer information leakage",
+      "importance": "medium",
+      "score_weight": 10,
+      "recommendations": [
+        "Use 'strict-origin-when-cross-origin' for balanced security and functionality",
+        "Consider 'no-referrer' for maximum privacy",
+        "Avoid 'unsafe-url' and 'no-referrer-when-downgrade'",
+        "Test functionality with different policies before deployment"
+      ],
+      "valid_values": [
+        "no-referrer",
+        "no-referrer-when-downgrade",
+        "origin",
+        "origin-when-cross-origin", 
+        "same-origin",
+        "strict-origin",
+        "strict-origin-when-cross-origin",
+        "unsafe-url"
+      ],
+      "recommended_values": ["strict-origin-when-cross-origin", "no-referrer"],
+      "risky_values": ["unsafe-url", "no-referrer-when-downgrade"]
+    },
+    "permissions-policy": {
+      "name": "Permissions-Policy",
+      "description": "Controls browser feature access",
+      "importance": "medium",
+      "score_weight": 10,
+      "recommendations": [
+        "Explicitly disable unused browser features",
+        "Use allowlists for features your site requires",
+        "Regularly review and update permissions",
+        "Consider features like camera, microphone, geolocation carefully"
+      ],
+      "important_features": [
+        "camera",
+        "microphone",
+        "geolocation",
+        "payment",
+        "usb",
+        "bluetooth"
+      ]
+    },
+    "x-xss-protection": {
+      "name": "X-XSS-Protection",
+      "description": "Legacy XSS protection (use CSP instead)",
+      "importance": "low",
+      "score_weight": 5,
+      "recommendations": [
+        "Set to '1; mode=block' only if CSP is not implemented",
+        "Implement Content-Security-Policy for modern XSS protection",
+        "Never set to '0' as it disables browser XSS protection",
+        "Consider removing this header when strong CSP is in place"
+      ],
+      "analysis_rules": {
+        "disabled": {
+          "pattern": "^0$",
+          "severity": "critical",
+          "message": "XSS protection is completely disabled"
+        },
+        "enabled_without_block": {
+          "pattern": "^1(?!.*mode=block)",
+          "severity": "medium",
+          "message": "XSS protection enabled but not in block mode"
+        }
+      },
+      "deprecated_notice": "This header is deprecated. Use Content-Security-Policy instead."
+    }
+  },
+  "scoring": {
+    "grade_thresholds": {
+      "A+": 95,
+      "A": 90,
+      "B+": 85,
+      "B": 80,
+      "C+": 75,
+      "C": 70,
+      "D+": 65,
+      "D": 60,
+      "F": 0
+    },
+    "bonus_points": {
+      "csp_with_nonce": 5,
+      "csp_with_hash": 3,
+      "hsts_preload": 5,
+      "hsts_long_max_age": 3,
+      "comprehensive_permissions_policy": 5,
+      "report_uri_configured": 2
+    },
+    "penalty_points": {
+      "csp_unsafe_inline": -10,
+      "csp_unsafe_eval": -15,
+      "xss_protection_disabled": -20,
+      "hsts_very_short": -10
+    }
+  },
+  "reporting": {
+    "include_response_headers": false,
+    "show_redirect_chain": true,
+    "highlight_security_issues": true,
+    "group_by_grade": false
+  },
+  "advanced_checks": {
+    "check_mixed_content": true,
+    "validate_csp_syntax": true,
+    "check_deprecated_headers": true,
+    "analyze_header_combinations": true
+  }
+}
