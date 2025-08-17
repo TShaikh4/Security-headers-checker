@@ -130,7 +130,8 @@ class SecurityHeadersReporter:
                     f"Response Time: {response_time}s")
         
         # Redirect info
-        if result.get('redirect_info', {}).get('redirected'):
+        redirect_info = result.get('redirect_info') or {}
+        if redirect_info.get('redirected'):
             final_url = result.get('final_url', '')
             lines.append(self._color_text(f"🔀 Redirected to: {final_url}", Fore.YELLOW))
         

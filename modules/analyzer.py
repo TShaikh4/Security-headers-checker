@@ -227,7 +227,7 @@ class SecurityHeadersAnalyzer:
     
     def _analyze_csp(self, value: str, base_score: int) -> Dict:
         """Analyze Content-Security-Policy header."""
-        analysis = {'score': base_score, 'quality': 'good'}
+        analysis = {'score': base_score, 'quality': 'good', 'issues': []}
         
         value_lower = value.lower()
         
@@ -256,7 +256,7 @@ class SecurityHeadersAnalyzer:
     
     def _analyze_hsts(self, value: str, base_score: int) -> Dict:
         """Analyze Strict-Transport-Security header."""
-        analysis = {'score': base_score, 'quality': 'good'}
+        analysis = {'score': base_score, 'quality': 'good', 'issues': []}
         
         # Extract max-age value
         max_age_match = re.search(r'max-age=(\d+)', value.lower())
@@ -286,7 +286,7 @@ class SecurityHeadersAnalyzer:
     
     def _analyze_frame_options(self, value: str, base_score: int) -> Dict:
         """Analyze X-Frame-Options header."""
-        analysis = {'score': base_score, 'quality': 'good'}
+        analysis = {'score': base_score, 'quality': 'good', 'issues': []}
         
         value_upper = value.upper().strip()
         
@@ -306,7 +306,7 @@ class SecurityHeadersAnalyzer:
     
     def _analyze_content_type_options(self, value: str, base_score: int) -> Dict:
         """Analyze X-Content-Type-Options header."""
-        analysis = {'score': base_score, 'quality': 'good'}
+        analysis = {'score': base_score, 'quality': 'good', 'issues': []}
         
         if value.lower().strip() != 'nosniff':
             analysis['issues'].append(f"Should be 'nosniff', found: {value}")
@@ -319,7 +319,7 @@ class SecurityHeadersAnalyzer:
     
     def _analyze_referrer_policy(self, value: str, base_score: int) -> Dict:
         """Analyze Referrer-Policy header."""
-        analysis = {'score': base_score, 'quality': 'good'}
+        analysis = {'score': base_score, 'quality': 'good', 'issues': []}
         
         safe_policies = [
             'no-referrer', 'strict-origin', 'strict-origin-when-cross-origin',
@@ -341,7 +341,7 @@ class SecurityHeadersAnalyzer:
     
     def _analyze_permissions_policy(self, value: str, base_score: int) -> Dict:
         """Analyze Permissions-Policy header."""
-        analysis = {'score': base_score, 'quality': 'good'}
+        analysis = {'score': base_score, 'quality': 'good', 'issues': []}
         
         # Count number of restricted features
         feature_count = value.count('=')
@@ -358,7 +358,7 @@ class SecurityHeadersAnalyzer:
     
     def _analyze_xss_protection(self, value: str, base_score: int) -> Dict:
         """Analyze X-XSS-Protection header."""
-        analysis = {'score': base_score, 'quality': 'good'}
+        analysis = {'score': base_score, 'quality': 'good', 'issues': []}
         
         if value.strip() == '0':
             analysis['issues'].append("XSS protection is disabled")
