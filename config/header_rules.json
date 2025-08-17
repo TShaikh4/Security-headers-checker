@@ -1,0 +1,153 @@
+{
+  "headers": {
+    "content-security-policy": {
+      "name": "Content-Security-Policy",
+      "description": "Prevents cross-site scripting (XSS) attacks by controlling resource loading",
+      "importance": "critical",
+      "score_weight": 25,
+      "recommendations": [
+        "Implement a strict CSP policy",
+        "Avoid 'unsafe-inline' and 'unsafe-eval' directives",
+        "Use nonces or hashes for inline scripts",
+        "Regularly review and update your CSP policy"
+      ],
+      "analysis_rules": {
+        "unsafe_inline": {
+          "pattern": "'unsafe-inline'",
+          "severity": "high",
+          "message": "unsafe-inline allows inline scripts/styles, reducing XSS protection"
+        },
+        "unsafe_eval": {
+          "pattern": "'unsafe-eval'",
+          "severity": "high", 
+          "message": "unsafe-eval allows dynamic code execution, creating security risks"
+        },
+        "wildcard_source": {
+          "pattern": "\\*",
+          "severity": "medium",
+          "message": "Wildcard sources reduce CSP effectiveness"
+        }
+      }
+    },
+    "strict-transport-security": {
+      "name": "Strict-Transport-Security",
+      "description": "Enforces secure HTTPS connections and prevents protocol downgrade attacks",
+      "importance": "critical",
+      "score_weight": 20,
+      "recommendations": [
+        "Set max-age to at least 31536000 (1 year)",
+        "Include includeSubDomains directive",
+        "Consider adding preload directive for major sites"
+      ],
+      "analysis_rules": {
+        "short_max_age": {
+          "pattern": "max-age=([0-9]+)",
+          "threshold": 31536000,
+          "severity": "medium",
+          "message": "max-age should be at least 1 year (31536000 seconds)"
+        },
+        "missing_subdomains": {
+          "pattern": "includeSubDomains",
+          "required": true,
+          "severity": "medium",
+          "message": "includeSubDomains directive missing"
+        }
+      }
+    },
+    "x-frame-options": {
+      "name": "X-Frame-Options",
+      "description": "Prevents clickjacking attacks by controlling iframe embedding",
+      "importance": "high",
+      "score_weight": 15,
+      "recommendations": [
+        "Use DENY for maximum protection",
+        "Use SAMEORIGIN if framing within same origin is needed",
+        "Avoid ALLOWALL as it provides no protection"
+      ],
+      "valid_values": ["DENY", "SAMEORIGIN", "ALLOW-FROM"]
+    },
+    "x-content-type-options": {
+      "name": "X-Content-Type-Options",
+      "description": "Prevents MIME sniffing attacks",
+      "importance": "medium",
+      "score_weight": 10,
+      "recommendations": [
+        "Set to 'nosniff' to prevent MIME type sniffing"
+      ],
+      "valid_values": ["nosniff"]
+    },
+    "referrer-policy": {
+      "name": "Referrer-Policy",
+      "description": "Controls how much referrer information is shared",
+      "importance": "medium",
+      "score_weight": 10,
+      "recommendations": [
+        "Use 'strict-origin-when-cross-origin' for balanced security and functionality",
+        "Consider 'no-referrer' for maximum privacy",
+        "Avoid 'unsafe-url' as it leaks full URL in referrer"
+      ],
+      "valid_values": [
+        "no-referrer",
+        "no-referrer-when-downgrade", 
+        "origin",
+        "origin-when-cross-origin",
+        "same-origin",
+        "strict-origin",
+        "strict-origin-when-cross-origin",
+        "unsafe-url"
+      ]
+    },
+    "permissions-policy": {
+      "name": "Permissions-Policy",
+      "description": "Controls access to browser features and APIs",
+      "importance": "medium",
+      "score_weight": 10,
+      "recommendations": [
+        "Explicitly define permissions for sensitive features",
+        "Use 'self' for features your site needs",
+        "Use empty allowlist () to disable features completely"
+      ]
+    },
+    "x-xss-protection": {
+      "name": "X-XSS-Protection",
+      "description": "Legacy XSS protection (superseded by CSP)",
+      "importance": "low",
+      "score_weight": 5,
+      "recommendations": [
+        "Set to '1; mode=block' if CSP is not implemented",
+        "Consider removing if strong CSP is in place",
+        "Never use '0' as it disables XSS protection"
+      ],
+      "analysis_rules": {
+        "disabled": {
+          "pattern": "^0$",
+          "severity": "high",
+          "message": "XSS protection is disabled"
+        }
+      }
+    }
+  },
+  "scoring": {
+    "grade_thresholds": {
+      "A": 90,
+      "B": 80,
+      "C": 70,
+      "D": 60,
+      "F": 0
+    },
+    "bonus_points": {
+      "csp_nonce": 5,
+      "hsts_preload": 5,
+      "comprehensive_permissions_policy": 3
+    }
+  },
+  "scan_settings": {
+    "timeout": 10,
+    "max_retries": 3,
+    "retry_delay": 1,
+    "user_agents": [
+      "Mozilla/5.0 (Security-Headers-Checker/1.0)",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    ]
+  }
+}
